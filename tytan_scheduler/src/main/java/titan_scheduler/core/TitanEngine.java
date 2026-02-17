@@ -15,7 +15,7 @@ public class TitanEngine {
         this.jobQueue.add(job);
     }
     public void run() {// Fa girare il sistema di scheduling
-        while (true) {
+        while (!jobQueue.isEmpty()) {
             ScheduledJob job = jobQueue.poll();
             try{
                 job.getAction().execute();

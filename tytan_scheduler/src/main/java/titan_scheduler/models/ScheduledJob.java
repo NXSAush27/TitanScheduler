@@ -5,15 +5,17 @@ import java.util.UUID;
 public class ScheduledJob implements Comparable<ScheduledJob> {
     private final String id;
     private final int priority;
-    private final Action action; 
+    private final String taskType;
     
     private JobStatus status;
     private int retryCount;
+    private final String payload;
 
-    public ScheduledJob(int priority, Action action) {
+    public ScheduledJob(int priority, String taskType, String payload) {
         this.id = UUID.randomUUID().toString();
         this.priority = priority;
-        this.action = action;
+        this.taskType = taskType;
+        this.payload = payload;
         this.status = JobStatus.PENDING;
         this.retryCount = 0;
     }
@@ -26,8 +28,12 @@ public class ScheduledJob implements Comparable<ScheduledJob> {
         return priority;
     }
 
-    public Action getAction() {
-        return action;
+    public String getTaskType() {
+        return taskType;
+    }
+
+    public String getPayload() {
+        return payload;
     }
 
     public JobStatus getStatus() {

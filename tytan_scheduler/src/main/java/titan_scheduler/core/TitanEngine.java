@@ -6,6 +6,7 @@ import titan_scheduler.models.ScheduledJob;
 
 public class TitanEngine {
     private final PriorityBlockingQueue<ScheduledJob> jobQueue;
+    @SuppressWarnings("unused")
     private final int poolSize;
 
     public TitanEngine(int poolSize) {// Costruttore

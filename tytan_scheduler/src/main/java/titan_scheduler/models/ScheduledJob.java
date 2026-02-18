@@ -5,7 +5,7 @@ import java.util.UUID;
 public class ScheduledJob implements Comparable<ScheduledJob> {
     private final String id;
     private final int priority;
-    private final Action action;
+    private final Action action; 
     
     private JobStatus status;
     private int retryCount;

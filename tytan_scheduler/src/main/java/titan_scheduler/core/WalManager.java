@@ -51,6 +51,16 @@ public class WalManager {
             System.err.println("Errore critico scrittura WAL: " + e.getMessage());
         }
     }
+    public synchronized void logFail(String jobId) {
+        try {
+            String line = "FAIL | " + jobId;
+            writer.write(line);
+            writer.newLine();
+            writer.flush();
+        } catch (IOException e) {
+            System.err.println("Errore critico scrittura WAL: " + e.getMessage());
+        }
+    }
 
     public List<ScheduledJob> recover() {
         if (!Files.exists(WAL_PATH)) {
@@ -77,9 +87,9 @@ public class WalManager {
                     ScheduledJob job = new ScheduledJob(id, priority, taskType, payload);
                     reconstruction.put(id, job);
                     
-                } else if ("COMPLETE".equals(eventType)) {
+                } else if ("COMPLETE".equals(eventType) || "FAIL".equals(eventType)) { 
+                    // Se è completato O fallito definitivamente, lo rimuoviamo dalla memoria.
                     String id = parts[1];
-                    // Il job è finito, lo togliamo dalla lista di quelli da fare
                     reconstruction.remove(id); 
                 }
             }

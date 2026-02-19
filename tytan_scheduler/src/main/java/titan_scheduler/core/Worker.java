@@ -36,6 +36,8 @@ public class Worker extends Thread {
                     
                     if (job.getRetryCount() > 3) {
                         System.out.println("Job " + job.getId() + " fallito definitivamente: " + e.getMessage());
+                        walManager.logFail(job.getId());
+                    
                     } else {
                         System.out.println("Job fallito, tentativo " + job.getRetryCount() + " in corso...");
                         Thread.sleep((long) Math.pow(2, job.getRetryCount()-1) * 1000); 

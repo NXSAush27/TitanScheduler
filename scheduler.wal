@@ -1,3 +1,8 @@
 SUBMIT | f6913750-c73b-465d-8c25-cd8e67fab500 | 1 | PRINT_CONSOLE | Task a bassa priorità 1
 SUBMIT | 0ab74a3e-b4c6-4f3a-a80a-f60e4c44a50b | 10 | FAILING_TASK | Database down!
 COMPLETE | f6913750-c73b-465d-8c25-cd8e67fab500
+SUBMIT | 943f6f99-f0ba-4e18-a67f-01771d8e7750 | 1 | PRINT_CONSOLE | Task a bassa priorità 1
+SUBMIT | 3a2eae36-f26d-47cb-8b7d-5a598dd58222 | 10 | FAILING_TASK | Database down!
+COMPLETE | 943f6f99-f0ba-4e18-a67f-01771d8e7750
+FAIL | 0ab74a3e-b4c6-4f3a-a80a-f60e4c44a50b
+FAIL | 3a2eae36-f26d-47cb-8b7d-5a598dd58222

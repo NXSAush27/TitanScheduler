@@ -39,11 +39,17 @@ public class TitanNode {
                 
                 } else if (command.startsWith(NetworkProtocol.CMD_EXECUTE)) {
                     // Protocollo: EXEC|id|type|payload
-                    String[] parts = command.split("\\|");
+                    
+                    // FIX 1: Il parametro -1 forza Java a mantenere gli elementi vuoti finali
+                    String[] parts = command.split("\\|", -1); 
+                    
                     String jobId = parts[1];
                     String taskType = parts[2];
-                    String payload = parts[3];
-                    System.out.println("jobId: " + jobId);
+                    
+                    // FIX 2: Programmazione difensiva (Ternary Operator)
+                    // Se c'è un payload lo prendiamo, altrimenti stringa vuota
+                    String payload = parts.length > 3 ? parts[3] : "";
+
                     System.out.println("Ricevuto Job: " + jobId + " [" + taskType + "]");
 
                     try {

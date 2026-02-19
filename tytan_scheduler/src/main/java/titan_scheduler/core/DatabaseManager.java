@@ -53,7 +53,7 @@ public class DatabaseManager {
 
         // Usiamo il "try-with-resources" per assicurarci che la Connection torni al Pool!
         try (Connection conn = dataSource.getConnection();
-             Statement stmt = conn.createStatement()) {
+            Statement stmt = conn.createStatement()) {
             
             stmt.execute(createTableSQL);
             System.out.println("Database inizializzato (Tabella verificata/creata).");
@@ -75,7 +75,7 @@ public class DatabaseManager {
         String sql = "INSERT INTO scheduled_jobs (id, priority, task_type, payload, status, retry_count) VALUES (?, ?, ?, ?, ?, ?)";
         
         try (Connection conn = dataSource.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            PreparedStatement pstmt = conn.prepareStatement(sql)) {
             
             // Sostituiamo i punti interrogativi (?) con i veri valori
             pstmt.setString(1, job.getId());
@@ -98,7 +98,7 @@ public class DatabaseManager {
         String sql = "UPDATE scheduled_jobs SET status = ?, retry_count = ? WHERE id = ?";
         
         try (Connection conn = dataSource.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            PreparedStatement pstmt = conn.prepareStatement(sql)) {
             
             pstmt.setString(1, status.name());
             pstmt.setInt(2, retryCount);
@@ -119,8 +119,8 @@ public class DatabaseManager {
         String sql = "SELECT * FROM scheduled_jobs WHERE status IN ('PENDING', 'RUNNING')";
         
         try (Connection conn = dataSource.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql);
-             ResultSet rs = pstmt.executeQuery()) {
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            ResultSet rs = pstmt.executeQuery()) {
             
             // Scorriamo i risultati della query riga per riga
             while (rs.next()) {
@@ -141,5 +141,23 @@ public class DatabaseManager {
         
         System.out.println("Recovery dal DB completato. Job da riprendere: " + recovered.size());
         return recovered;
+    }
+    public ScheduledJob getJobById(String id) {
+        String sql = "SELECT * FROM scheduled_jobs WHERE id = ?";
+        try (Connection conn = dataSource.getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, id);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    int priority = rs.getInt("priority");
+                    String taskType = rs.getString("task_type");
+                    String payload = rs.getString("payload");
+                    return new ScheduledJob(id, priority, taskType, payload);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Errore durante il recupero job: " + e.getMessage());
+        }
+        return null;
     }
 }

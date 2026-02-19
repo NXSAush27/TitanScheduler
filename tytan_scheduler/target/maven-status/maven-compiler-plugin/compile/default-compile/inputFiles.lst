@@ -1,0 +1,12 @@
+/home/kaho/Desktop/TitanScheduler/tytan_scheduler/src/main/java/titan_scheduler/core/DatabaseManager.java
+/home/kaho/Desktop/TitanScheduler/tytan_scheduler/src/main/java/titan_scheduler/core/Main.java
+/home/kaho/Desktop/TitanScheduler/tytan_scheduler/src/main/java/titan_scheduler/core/TaskFactory.java
+/home/kaho/Desktop/TitanScheduler/tytan_scheduler/src/main/java/titan_scheduler/core/TitanEngine.java
+/home/kaho/Desktop/TitanScheduler/tytan_scheduler/src/main/java/titan_scheduler/core/Worker.java
+/home/kaho/Desktop/TitanScheduler/tytan_scheduler/src/main/java/titan_scheduler/models/Action.java
+/home/kaho/Desktop/TitanScheduler/tytan_scheduler/src/main/java/titan_scheduler/models/JobStatus.java
+/home/kaho/Desktop/TitanScheduler/tytan_scheduler/src/main/java/titan_scheduler/models/ScheduledJob.java
+/home/kaho/Desktop/TitanScheduler/tytan_scheduler/src/main/java/titan_scheduler/network/MainServer.java
+/home/kaho/Desktop/TitanScheduler/tytan_scheduler/src/main/java/titan_scheduler/network/NetworkProtocol.java
+/home/kaho/Desktop/TitanScheduler/tytan_scheduler/src/main/java/titan_scheduler/network/TitanMaster.java
+/home/kaho/Desktop/TitanScheduler/tytan_scheduler/src/main/java/titan_scheduler/network/TitanNode.java

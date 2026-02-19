@@ -96,4 +96,7 @@ public class TitanMaster {
         databaseManager.insertJob(job);
         queue.add(job);
     }
+    public DatabaseManager getDatabaseManager() {
+        return databaseManager;
+    }
 }

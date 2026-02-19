@@ -42,6 +42,8 @@ public class TitanMaster {
     }
     
     // Questa classe interna gestisce UN singolo worker
+    // In titan_scheduler/network/TitanMaster.java
+
     private class ClientHandler implements Runnable {
         private Socket socket;
 
@@ -55,8 +57,10 @@ public class TitanMaster {
                 BufferedReader in = new BufferedReader(new java.io.InputStreamReader(socket.getInputStream()));
                 PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
                 
-                String message = in.readLine();
-                if(message != null) {
+                String message;
+                // FIX: Aggiunto ciclo while per mantenere viva la conversazione
+                while ((message = in.readLine()) != null) {
+                    
                     if(message.startsWith(NetworkProtocol.MSG_READY)) {
                         ScheduledJob job = queue.poll();
                         if(job != null) {
@@ -68,16 +72,20 @@ public class TitanMaster {
                         String[] parts = message.split("\\|");
                         if(parts.length >= 2) {
                             walManager.logComplete(parts[1]);
+                            System.out.println("Job completato: " + parts[1]); // Log utile lato server
                         }
                     } else if(message.startsWith(NetworkProtocol.MSG_FAIL)) {
                         String[] parts = message.split("\\|");
                         if(parts.length >= 2) {
                             walManager.logFail(parts[1]);
+                            System.out.println("Job fallito: " + parts[1]);
                         }
                     }
                 }
             } catch (IOException e) {
-                System.out.println("Worker disconnesso bruscamente.");
+                System.out.println("Worker disconnesso.");
+            } finally {
+                try { socket.close(); } catch (IOException e) { e.printStackTrace(); }
             }
         }
     }

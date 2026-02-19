@@ -152,7 +152,13 @@ public class DatabaseManager {
                     int priority = rs.getInt("priority");
                     String taskType = rs.getString("task_type");
                     String payload = rs.getString("payload");
-                    return new ScheduledJob(id, priority, taskType, payload);
+                    ScheduledJob job = new ScheduledJob(id, priority, taskType, payload);
+
+                    // Leggi lo stato reale dal DB e sovrascrivi il default
+                    String realStatus = rs.getString("status");
+                    job.setStatus(JobStatus.valueOf(realStatus)); 
+
+                    return job;
                 }
             }
         } catch (SQLException e) {

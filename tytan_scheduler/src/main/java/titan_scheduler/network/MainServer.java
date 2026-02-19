@@ -11,7 +11,10 @@ public class MainServer {
         new Thread(() -> master.start()).start();
 
         // 2. Avvia il server Web RESTful sulla porta 8080
-        Javalin app = Javalin.create().start(8080);
+        Javalin app = Javalin.create(config -> {
+            // Diciamo a Javalin di cercare i file statici nella cartella "public"
+            config.staticFiles.add("/public", io.javalin.http.staticfiles.Location.CLASSPATH);
+        }).start(8080);
 
         // ENDPOINT 1: Riceve un JSON e sottomettte il job
         app.post("/api/jobs", ctx -> {
@@ -38,6 +41,10 @@ public class MainServer {
             } else {
                 ctx.status(404).result("Job non trovato");
             }
+        });
+        // ENDPOINT 3: Restituisce la lista di tutti i job per la dashboard
+        app.get("/api/jobs", ctx -> {
+            ctx.json(master.getDatabaseManager().getAllJobs());
         });
     }
 }

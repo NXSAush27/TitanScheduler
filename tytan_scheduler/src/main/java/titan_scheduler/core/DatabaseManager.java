@@ -166,4 +166,28 @@ public class DatabaseManager {
         }
         return null;
     }
+    public List<ScheduledJob> getAllJobs() {
+        List<ScheduledJob> jobs = new ArrayList<>();
+        String sql = "SELECT * FROM scheduled_jobs ORDER BY created_at DESC LIMIT 50";
+        
+        try (Connection conn = dataSource.getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            ResultSet rs = pstmt.executeQuery()) {
+            
+            while (rs.next()) {
+                ScheduledJob job = new ScheduledJob(
+                    rs.getString("id"), 
+                    rs.getInt("priority"), 
+                    rs.getString("task_type"), 
+                    rs.getString("payload")
+                );
+                job.setStatus(JobStatus.valueOf(rs.getString("status")));
+                // job.setRetryCount(rs.getInt("retry_count")); // Se hai il setter
+                jobs.add(job);
+            }
+        } catch (SQLException e) {
+            System.err.println("Errore caricamento lista job: " + e.getMessage());
+        }
+        return jobs;
+    }
 }

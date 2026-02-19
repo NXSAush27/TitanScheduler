@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TitanScheduler Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-800 font-sans p-8">
+
+    <div class="max-w-6xl mx-auto">
+        <h1 class="text-4xl font-bold mb-8 text-blue-900">TitanScheduler Dashboard</h1>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            
+            <div class="bg-white p-6 rounded-lg shadow-md col-span-1 h-fit">
+                <h2 class="text-xl font-semibold mb-4 border-b pb-2">Nuovo Job</h2>
+                <form id="jobForm" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium">Task Type</label>
+                        <select id="taskType" class="w-full mt-1 p-2 border rounded">
+                            <option value="PRINT_CONSOLE">Stampa su Console</option>
+                            <option value="FAILING_TASK">Simula Fallimento</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium">Priorità (1-10)</label>
+                        <input type="number" id="priority" value="1" min="1" max="10" class="w-full mt-1 p-2 border rounded">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium">Payload</label>
+                        <textarea id="payload" rows="3" class="w-full mt-1 p-2 border rounded" placeholder="Inserisci i dati del job..."></textarea>
+                    </div>
+                    <button type="submit" class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 transition">
+                        Sottometti Job
+                    </button>
+                </form>
+            </div>
+
+            <div class="bg-white p-6 rounded-lg shadow-md col-span-1 md:col-span-2">
+                <div class="flex justify-between items-center border-b pb-2 mb-4">
+                    <h2 class="text-xl font-semibold">Coda e Storico</h2>
+                    <button onclick="loadJobs()" class="text-sm bg-gray-200 hover:bg-gray-300 py-1 px-3 rounded">🔄 Aggiorna</button>
+                </div>
+                
+                <div class="overflow-x-auto">
+                    <table class="min-w-full text-left">
+                        <thead>
+                            <tr class="bg-gray-50 text-gray-600 text-sm">
+                                <th class="py-2 px-4">ID (Ultimi caratteri)</th>
+                                <th class="py-2 px-4">Tipo</th>
+                                <th class="py-2 px-4">Priorità</th>
+                                <th class="py-2 px-4">Stato</th>
+                            </tr>
+                        </thead>
+                        <tbody id="jobTableBody" class="text-sm">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Funzione per caricare i job dal database
+        async function loadJobs() {
+            try {
+                const response = await fetch('/api/jobs');
+                const jobs = await response.json();
+                
+                const tbody = document.getElementById('jobTableBody');
+                tbody.innerHTML = ''; // Pulisce la tabella
+
+                jobs.forEach(job => {
+                    // Colori per lo status
+                    let statusColor = 'bg-gray-200 text-gray-800';
+                    if (job.status === 'COMPLETED') statusColor = 'bg-green-100 text-green-800';
+                    if (job.status === 'FAILED') statusColor = 'bg-red-100 text-red-800';
+                    if (job.status === 'PENDING' || job.status === 'RUNNING') statusColor = 'bg-yellow-100 text-yellow-800';
+
+                    const row = `
+                        <tr class="border-b hover:bg-gray-50">
+                            <td class="py-2 px-4 font-mono text-xs text-gray-500">...${job.id.slice(-8)}</td>
+                            <td class="py-2 px-4 font-medium">${job.taskType}</td>
+                            <td class="py-2 px-4">${job.priority}</td>
+                            <td class="py-2 px-4">
+                                <span class="px-2 py-1 rounded text-xs font-bold ${statusColor}">${job.status}</span>
+                            </td>
+                        </tr>
+                    `;
+                    tbody.insertAdjacentHTML('beforeend', row);
+                });
+            } catch (error) {
+                console.error("Errore nel caricamento dei job:", error);
+            }
+        }
+
+        // Gestione del Submit del Form
+        document.getElementById('jobForm').addEventListener('submit', async (e) => {
+            e.preventDefault(); // Evita il ricaricamento della pagina
+            
+            const jobRequest = {
+                taskType: document.getElementById('taskType').value,
+                priority: parseInt(document.getElementById('priority').value),
+                payload: document.getElementById('payload').value
+            };
+
+            try {
+                const response = await fetch('/api/jobs', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(jobRequest)
+                });
+                
+                if (response.ok) {
+                    document.getElementById('payload').value = ''; // Reset campo
+                    loadJobs(); // Ricarica la tabella per mostrare il nuovo job
+                }
+            } catch (error) {
+                alert("Errore nell'invio del Job!");
+            }
+        });
+
+        // Carica i job appena si apre la pagina
+        loadJobs();
+        // Opzionale: aggiorna ogni 3 secondi automaticamente
+        setInterval(loadJobs, 3000); 
+    </script>
+</body>
+</html>

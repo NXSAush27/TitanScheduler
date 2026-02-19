@@ -1,14 +1,6 @@
-SUBMIT | f6913750-c73b-465d-8c25-cd8e67fab500 | 1 | PRINT_CONSOLE | Task a bassa priorità 1
-SUBMIT | 0ab74a3e-b4c6-4f3a-a80a-f60e4c44a50b | 10 | FAILING_TASK | Database down!
-COMPLETE | f6913750-c73b-465d-8c25-cd8e67fab500
-SUBMIT | 943f6f99-f0ba-4e18-a67f-01771d8e7750 | 1 | PRINT_CONSOLE | Task a bassa priorità 1
-SUBMIT | 3a2eae36-f26d-47cb-8b7d-5a598dd58222 | 10 | FAILING_TASK | Database down!
-COMPLETE | 943f6f99-f0ba-4e18-a67f-01771d8e7750
-FAIL | 0ab74a3e-b4c6-4f3a-a80a-f60e4c44a50b
-FAIL | 3a2eae36-f26d-47cb-8b7d-5a598dd58222
-SUBMIT | 36e75b47-ebc4-45ea-ae79-3a04386c3eb9 | 0 | TEST_TASK | Test job
-SUBMIT | 9e527195-720a-46fa-aa23-c58136c2faeb | 1 | TEST_TASK | Test job
-SUBMIT | b29d3f1c-ea66-4501-9321-7cdca31e1ccb | 2 | TEST_TASK | Test job
-SUBMIT | ab5fdaad-47a8-4d4b-b524-cc5dd024dc72 | 0 | TEST_TASK | Test job
-SUBMIT | 7370bfbf-481c-42fa-ae68-75e61bf17d98 | 1 | TEST_TASK | Test job
-SUBMIT | 5ee37bbf-678b-4e74-ba0a-2b8b3594de8e | 2 | TEST_TASK | Test job
+SUBMIT | ba64a18e-483f-465b-abb0-fead46bb2c40 | 0 | PRINT_CONSOLE | Test job
+SUBMIT | 757a1197-141e-4e25-b268-2cdea24bc2e3 | 1 | PRINT_CONSOLE | Test job
+SUBMIT | 49538577-7e67-43d7-9671-d9324bdbde47 | 2 | PRINT_CONSOLE | Test job
+SUBMIT | 7a62c7b2-96a5-4dad-b23e-58ec2569f3e8 | 0 | PRINT_CONSOLE | Test job
+SUBMIT | b2cec89f-3de7-4960-9b56-7a35c244bb2e | 1 | PRINT_CONSOLE | Test job
+SUBMIT | cb510a68-ff80-42bb-b4ff-59912fc4498e | 2 | PRINT_CONSOLE | Test job

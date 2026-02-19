@@ -56,8 +56,6 @@ public class TitanMaster {
                 PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
                 
                 String message = in.readLine();
-                //messaggio ricevuto
-                out.println("Messaggio ricevuto");
                 if(message != null) {
                     if(message.startsWith(NetworkProtocol.MSG_READY)) {
                         ScheduledJob job = queue.poll();

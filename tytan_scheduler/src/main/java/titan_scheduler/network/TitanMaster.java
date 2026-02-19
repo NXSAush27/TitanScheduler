@@ -7,19 +7,20 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.PriorityBlockingQueue;
 
-import titan_scheduler.core.WalManager;
+import titan_scheduler.core.DatabaseManager;
+import titan_scheduler.models.JobStatus;
 import titan_scheduler.models.ScheduledJob;
 
 public class TitanMaster {
     private PriorityBlockingQueue<ScheduledJob> queue;
-    private WalManager walManager;
+    private DatabaseManager databaseManager;
     private boolean running = true;
 
     public TitanMaster() {
-        // Inizializza coda e WAL (col recovery!) come facevi nel vecchio TitanEngine
+        // Inizializza coda e DatabaseManager (col recovery!) come facevi nel vecchio TitanEngine
         this.queue = new PriorityBlockingQueue<>();
-        this.walManager = new WalManager();
-        var recovered = walManager.recover();
+        this.databaseManager = new DatabaseManager();
+        var recovered = databaseManager.recoverPendingJobs();
         this.queue.addAll(recovered);
     }
 
@@ -71,13 +72,13 @@ public class TitanMaster {
                     } else if(message.startsWith(NetworkProtocol.MSG_DONE)) {
                         String[] parts = message.split("\\|");
                         if(parts.length >= 2) {
-                            walManager.logComplete(parts[1]);
+                            databaseManager.updateJobStatus(parts[1], JobStatus.COMPLETED, 0);
                             System.out.println("Job completato: " + parts[1]); // Log utile lato server
                         }
                     } else if(message.startsWith(NetworkProtocol.MSG_FAIL)) {
                         String[] parts = message.split("\\|");
                         if(parts.length >= 2) {
-                            walManager.logFail(parts[1]);
+                            databaseManager.updateJobStatus(parts[1], JobStatus.FAILED, 0);
                             System.out.println("Job fallito: " + parts[1]);
                         }
                     }
@@ -92,7 +93,7 @@ public class TitanMaster {
     
     // Metodo per permettere al Main di aggiungere job (altrimenti la coda resta vuota!)
     public void submitJob(ScheduledJob job) {
-        walManager.logSubmit(job);
+        databaseManager.insertJob(job);
         queue.add(job);
     }
 }

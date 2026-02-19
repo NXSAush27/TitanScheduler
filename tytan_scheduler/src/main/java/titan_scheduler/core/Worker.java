@@ -8,11 +8,11 @@ import titan_scheduler.models.ScheduledJob;
 
 public class Worker extends Thread {
     private final PriorityBlockingQueue<ScheduledJob> queue;
-    private final WalManager walManager;
+    private final DatabaseManager databaseManager;
 
-    public Worker(PriorityBlockingQueue<ScheduledJob> queue, WalManager walManager) {
+    public Worker(PriorityBlockingQueue<ScheduledJob> queue, DatabaseManager databaseManager) {
         this.queue = queue;
-        this.walManager = walManager;
+        this.databaseManager = databaseManager;
     }
     @Override
     public void run() {
@@ -26,7 +26,7 @@ public class Worker extends Thread {
                     // Esecuzione pura
                     Action actionToRun = TaskFactory.createAction(job.getTaskType(), job.getPayload());
                     actionToRun.execute();
-                    walManager.logComplete(job.getId());
+                    databaseManager.updateJobStatus(job.getId(), JobStatus.COMPLETED, 0);
                     job.setStatus(JobStatus.COMPLETED);
                     
                 } catch (Exception e) {
@@ -36,7 +36,7 @@ public class Worker extends Thread {
                     
                     if (job.getRetryCount() > 3) {
                         System.out.println("Job " + job.getId() + " fallito definitivamente: " + e.getMessage());
-                        walManager.logFail(job.getId());
+                        databaseManager.updateJobStatus(job.getId(), JobStatus.FAILED, 0);
                     
                     } else {
                         System.out.println("Job fallito, tentativo " + job.getRetryCount() + " in corso...");

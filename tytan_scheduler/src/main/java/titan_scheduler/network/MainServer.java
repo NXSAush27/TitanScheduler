@@ -1,11 +1,12 @@
 package titan_scheduler.network;
 
+import titan_scheduler.core.DatabaseManager;
+
 public class MainServer {
     public static void main(String[] args) {
-        TitanMaster master = new TitanMaster();
-        //master.submitJob(new ScheduledJob(0, "PRINT_CONSOLE", "Test job"));
-        //master.submitJob(new ScheduledJob(1, "PRINT_CONSOLE", "Test job"));
-        //master.submitJob(new ScheduledJob(2, "PRINT_CONSOLE", "Test job"));
-        master.start();
+        System.out.println("Provo a connettermi a PostgreSQL...");
+        DatabaseManager db = new DatabaseManager();
+        db.insertJob(new titan_scheduler.models.ScheduledJob(1, "PRINT_CONSOLE", "test-payload"));
+        System.out.println("Connessione riuscita!");
     }
 }

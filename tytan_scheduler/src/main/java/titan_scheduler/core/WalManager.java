@@ -6,6 +6,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList; // Ricorda gli import
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import titan_scheduler.models.ScheduledJob;
 
@@ -46,5 +50,44 @@ public class WalManager {
         } catch (IOException e) {
             System.err.println("Errore critico scrittura WAL: " + e.getMessage());
         }
+    }
+
+    public List<ScheduledJob> recover() {
+        if (!Files.exists(WAL_PATH)) {
+            return new ArrayList<>();
+        }
+
+        Map<String, ScheduledJob> reconstruction = new HashMap<>();
+
+        try {
+            List<String> lines = Files.readAllLines(WAL_PATH);
+            
+            for (String line : lines) {
+                // Splittiamo la riga usando il separatore " | "
+                String[] parts = line.split(" \\| "); 
+                String eventType = parts[0];
+
+                if ("SUBMIT".equals(eventType)) {
+                    String id = parts[1];
+                    int priority = Integer.parseInt(parts[2]);
+                    String taskType = parts[3];
+                    String payload = parts[4];
+                    
+                    // Usiamo il nuovo costruttore che accetta l'ID
+                    ScheduledJob job = new ScheduledJob(id, priority, taskType, payload);
+                    reconstruction.put(id, job);
+                    
+                } else if ("COMPLETE".equals(eventType)) {
+                    String id = parts[1];
+                    // Il job è finito, lo togliamo dalla lista di quelli da fare
+                    reconstruction.remove(id); 
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Errore durante il recovery del WAL", e);
+        }
+
+        System.out.println("Recovery completato. Job ripristinati: " + reconstruction.size());
+        return new ArrayList<>(reconstruction.values());
     }
 }

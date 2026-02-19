@@ -1,0 +1,3 @@
+SUBMIT | f6913750-c73b-465d-8c25-cd8e67fab500 | 1 | PRINT_CONSOLE | Task a bassa priorità 1
+SUBMIT | 0ab74a3e-b4c6-4f3a-a80a-f60e4c44a50b | 10 | FAILING_TASK | Database down!
+COMPLETE | f6913750-c73b-465d-8c25-cd8e67fab500

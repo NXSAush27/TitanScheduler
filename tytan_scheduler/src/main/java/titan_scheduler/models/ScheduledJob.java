@@ -19,6 +19,15 @@ public class ScheduledJob implements Comparable<ScheduledJob> {
         this.status = JobStatus.PENDING;
         this.retryCount = 0;
     }
+    // Costruttore per il Recovery (mantiene l'ID originale)
+    public ScheduledJob(String id, int priority, String taskType, String payload) {
+        this.id = id; // Usiamo quello letto dal file
+        this.priority = priority;
+        this.taskType = taskType;
+        this.payload = payload;
+        this.status = JobStatus.PENDING;
+        this.retryCount = 0; // Resettiamo i tentativi al riavvio (policy comune)
+    }
 
     public String getId() {
         return id;

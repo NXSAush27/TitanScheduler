@@ -8,9 +8,11 @@ import titan_scheduler.models.ScheduledJob;
 
 public class Worker extends Thread {
     private final PriorityBlockingQueue<ScheduledJob> queue;
-    
-    public Worker(PriorityBlockingQueue<ScheduledJob> queue) {
+    private final WalManager walManager;
+
+    public Worker(PriorityBlockingQueue<ScheduledJob> queue, WalManager walManager) {
         this.queue = queue;
+        this.walManager = walManager;
     }
     @Override
     public void run() {
@@ -24,6 +26,7 @@ public class Worker extends Thread {
                     // Esecuzione pura
                     Action actionToRun = TaskFactory.createAction(job.getTaskType(), job.getPayload());
                     actionToRun.execute();
+                    walManager.logComplete(job.getId());
                     job.setStatus(JobStatus.COMPLETED);
                     
                 } catch (Exception e) {

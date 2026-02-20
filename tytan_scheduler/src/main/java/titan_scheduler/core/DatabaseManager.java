@@ -21,8 +21,11 @@ public class DatabaseManager {
     public DatabaseManager() {
         HikariConfig config = new HikariConfig();
         
-        // 1. LA STRINGA DI CONNESSIONE CORRETTA (Senza "ON", usa la porta 5432)
-        config.setJdbcUrl("jdbc:postgresql://localhost:5432/titanscheduler");
+        String dbHost = System.getenv("DB_HOST");
+        if (dbHost == null) {
+            dbHost = "localhost"; // Fallback per quando lo avvii senza Docker
+        }
+        config.setJdbcUrl("jdbc:postgresql://" + dbHost + ":5432/titanscheduler");
         config.setUsername("titan");
         config.setPassword("titan123");
         

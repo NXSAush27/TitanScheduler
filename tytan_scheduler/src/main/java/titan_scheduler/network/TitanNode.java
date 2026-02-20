@@ -12,11 +12,14 @@ public class TitanNode {
     
     @SuppressWarnings("CallToPrintStackTrace")
     public static void main(String[] args) {
-        System.out.println("TitanNode avviato. Tentativo di connessione al Master...");
-
-        try (Socket socket = new Socket("localhost", NetworkProtocol.PORT);
-             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
+        String masterHost = System.getenv("MASTER_HOST");
+        if (masterHost == null) {
+            masterHost = "localhost";
+        }
+        System.out.println("TitanNode avviato. Tentativo di connessione al Master su " + masterHost + "...");
+        try (Socket socket = new Socket(masterHost, NetworkProtocol.PORT);
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
 
             System.out.println("Connesso al Master su " + socket.getInetAddress());
 

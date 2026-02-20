@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  # 1. IL DATABASE
+  postgres-db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: titan
+      POSTGRES_PASSWORD: titan123
+      POSTGRES_DB: titanscheduler
+    ports:
+      - "5432:5432"
+
+  # 2. IL SERVER MASTER (E UI Web)
+  titan-master:
+    build: .
+    command: java -cp /app/titan.jar titan_scheduler.network.MainServer
+    environment:
+      - DB_HOST=postgres-db   # Dice al Master di cercare il DB nel container 'postgres-db'
+    ports:
+      - "8080:8080"
+      - "9999:9999"
+    depends_on:
+      - postgres-db
+
+  # 3. I NODI WORKER
+  titan-worker:
+    build: .
+    command: java -cp /app/titan.jar titan_scheduler.network.TitanNode
+    environment:
+      - MASTER_HOST=titan-master # Dice al Worker di connettersi al container 'titan-master'
+    depends_on:
+      - titan-master

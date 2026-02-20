@@ -3,7 +3,7 @@
 
 TitanScheduler is a highly concurrent, fault-tolerant job scheduling and execution engine. Built to deeply understand distributed systems without relying on "magic" frameworks like Spring Boot, it handles networking, connection pooling, and multi-threading from the ground up.
 
-![TitanScheduler Dashboard](screenie)
+![TitanScheduler Dashboard](ScreenShot.png)
 
 ## Key Features
 * **Distributed Master-Worker Architecture:** A central Master node orchestrates tasks and dispatches them to multiple Worker nodes (`TitanNode`) over custom TCP sockets.

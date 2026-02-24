@@ -16,11 +16,32 @@ public class TitanNode {
         if (masterHost == null) {
             masterHost = "localhost";
         }
-        System.out.println("TitanNode avviato. Tentativo di connessione al Master su " + masterHost + "...");
-        try (Socket socket = new Socket(masterHost, NetworkProtocol.PORT);
-            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
 
+        System.out.println("TitanNode avviato. Cerco il Master su " + masterHost + "...");
+
+        // 1. IL MECCANISMO DI RETRY
+        Socket socket = null;
+        while (socket == null) {
+            try {
+                socket = new Socket(masterHost, NetworkProtocol.PORT);
+            } catch (Exception e) {
+                System.out.println("⏳ Master non ancora in ascolto. Ritento tra 3 secondi...");
+                try {
+                    Thread.sleep(3000); // Aspetta 3 secondi prima di riprovare
+                } catch (InterruptedException ie) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+        }
+
+        System.out.println("✅ Connesso al TitanMaster!");
+
+        // 2. USIAMO IL SOCKET GIA' APERTO NEL TRY-WITH-RESOURCES
+        try (Socket activeSocket = socket;
+            PrintWriter out = new PrintWriter(activeSocket.getOutputStream(), true);
+            BufferedReader in = new BufferedReader(new InputStreamReader(activeSocket.getInputStream()))) {
+            
+        // ... qui rimane tutto il resto del codice identico a prima (in.readLine(), ecc.) ...
             System.out.println("Connesso al Master su " + socket.getInetAddress());
 
             while (true) {
